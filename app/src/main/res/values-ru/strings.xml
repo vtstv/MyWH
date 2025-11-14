@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyWH</string>
+    <string name="app_version">v1.0</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Главная</string>
+    <string name="folders">Папки</string>
+    <string name="all_folders">Папки</string>
+    <string name="nav_storages">Хранилища</string>
+    <string name="nav_marked">Избранное</string>
+    <string name="nav_statistics">Статистика</string>
+    <string name="nav_settings">Настройки</string>
+    <string name="nav_import">Импорт</string>
+    <string name="nav_export">Экспорт</string>
+    <string name="nav_about">О программе</string>
+
+    <!-- Search -->
+    <string name="search_hint">Поиск папок и товаров</string>
+    <string name="search_folders">Поиск папок</string>
+    <string name="search_products">Поиск товаров</string>
+
+    <!-- Folder operations -->
+    <string name="add_folder">Добавить папку</string>
+    <string name="add_subfolder">Добавить подпапку</string>
+    <string name="edit_folder">Редактировать папку</string>
+    <string name="rename_folder">Переименовать папку</string>
+    <string name="delete_folder">Удалить папку</string>
+    <string name="move_folder">Переместить папку</string>
+    <string name="copy_folder">Копировать папку</string>
+    <string name="folder_name">Название папки</string>
+    <string name="folder_description">Описание</string>
+    <string name="storage">Хранилище</string>
+    <string name="change">Изменить</string>
+    <string name="change_storage">Изменить хранилище</string>
+    <string name="select_storage">Выберите хранилище</string>
+    <string name="parent_folder">Родительская папка</string>
+    <string name="copy_content">Копировать содержимое</string>
+    <string name="copied_to_clipboard">Скопировано в буфер обмена</string>
+    <string name="favorites">Избранное</string>
+
+    <!-- Storage operations -->
+    <string name="add_storage">Добавить хранилище</string>
+    <string name="edit_storage">Редактировать хранилище</string>
+    <string name="delete_storage">Удалить хранилище</string>
+    <string name="storage_name">Название хранилища</string>
+
+    <!-- General -->
+    <string name="name">Название</string>
+    <string name="description">Описание</string>
+    <string name="created_at">Создано</string>
+    <string name="updated_at">Изменено</string>
+    <string name="ok">ОК</string>
+    <string name="cancel">Отмена</string>
+    <string name="delete">Удалить</string>
+    <string name="unknown">Неизвестно</string>
+    <string name="edit">Редактировать</string>
+    <string name="remove">Убрать</string>
+
+    <!-- Statistics -->
+    <string name="statistics">Статистика</string>
+    <string name="total_storages">Всего хранилищ</string>
+    <string name="total_folders">Всего папок</string>
+    <string name="total_items">Всего элементов</string>
+
+    <!-- Settings -->
+    <string name="settings">Настройки</string>
+    <string name="theme">Тема</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Темная</string>
+    <string name="theme_system">Системная</string>
+    <string name="language">Язык</string>
+    <string name="language_changed_restart">Язык изменен. Приложение будет перезапущено.</string>
+
+    <!-- Import/Export -->
+    <string name="export_data">Экспорт данных</string>
+    <string name="import_data">Импорт данных</string>
+    <string name="import_mysql_dump">Импорт из MySQL дампа</string>
+    <string name="export_success">Данные успешно экспортированы</string>
+    <string name="import_success">Данные успешно импортированы</string>
+    <string name="export_error">Ошибка экспорта данных</string>
+    <string name="import_error">Ошибка импорта данных</string>
+    <string name="import_warning_message">Внимание! Все текущие данные будут заменены импортированными. Это действие нельзя отменить. Продолжить?</string>
+    <string name="import_continue">Импортировать в любом случае</string>
+
+    <!-- Messages -->
+    <string name="mark_favorite">Добавить в избранное</string>
+    <string name="unmark_favorite">Убрать из избранного</string>
+    <string name="copy_description">Копировать описание</string>
+    <string name="warehouses">Хранилища</string>
+    <string name="recent_folders">Недавние папки</string>
+    <string name="marked_folders">Избранные папки</string>
+    <string name="no_folders">Нет папок</string>
+    <string name="no_storages">Нет хранилищ</string>
+    <string name="delete_confirmation">Вы уверены, что хотите удалить?</string>
+    <string name="delete_warning">Это действие нельзя отменить</string>
+    <string name="remove_from_favorites_confirmation">Убрать из избранного?</string>
+
+    <!-- Batch operations -->
+    <string name="batch_actions">Пакетные действия</string>
+    <string name="select_mode">Режим выбора</string>
+    <string name="select_folders">Выберите папки</string>
+    <string name="selected">выбрано</string>
+    <string name="batch_rename">Переименовать выбранные</string>
+    <string name="batch_move">Переместить в хранилище</string>
+    <string name="batch_delete">Удалить выбранные</string>
+    <string name="cancel_selection">Отменить выбор</string>
+    <string name="delete_folders">Удалить папки</string>
+    <string name="delete_confirmation_multiple">Удалить %1$d папок?</string>
+    <string name="previous">Назад</string>
+    <string name="next">Вперёд</string>
+
+    <!-- Dates -->
+    <string name="date_format">%1$s</string>
+</resources>
+

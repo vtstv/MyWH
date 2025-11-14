@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyWH</string>
+    <string name="app_version">v1.0</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Startseite</string>
+    <string name="folders">Ordner</string>
+    <string name="all_folders">Ordner</string>
+    <string name="nav_storages">Lager</string>
+    <string name="nav_marked">Favoriten</string>
+    <string name="nav_statistics">Statistik</string>
+    <string name="nav_settings">Einstellungen</string>
+    <string name="nav_import">Importieren</string>
+    <string name="nav_export">Exportieren</string>
+    <string name="nav_about">Über</string>
+
+    <!-- Search -->
+    <string name="search_hint">Ordner und Artikel suchen</string>
+    <string name="search_folders">Ordner suchen</string>
+    <string name="search_products">Artikel suchen</string>
+
+    <!-- Folder operations -->
+    <string name="add_folder">Ordner hinzufügen</string>
+    <string name="add_subfolder">Unterordner hinzufügen</string>
+    <string name="edit_folder">Ordner bearbeiten</string>
+    <string name="rename_folder">Ordner umbenennen</string>
+    <string name="delete_folder">Ordner löschen</string>
+    <string name="move_folder">Ordner verschieben</string>
+    <string name="copy_folder">Ordner kopieren</string>
+    <string name="folder_name">Ordnername</string>
+    <string name="folder_description">Beschreibung</string>
+    <string name="storage">Lager</string>
+    <string name="change">Ändern</string>
+    <string name="change_storage">Lager ändern</string>
+    <string name="select_storage">Lager auswählen</string>
+    <string name="parent_folder">Übergeordneter Ordner</string>
+    <string name="copy_content">Inhalt kopieren</string>
+    <string name="copied_to_clipboard">In Zwischenablage kopiert</string>
+    <string name="favorites">Favoriten</string>
+
+    <!-- Storage operations -->
+    <string name="add_storage">Lager hinzufügen</string>
+    <string name="edit_storage">Lager bearbeiten</string>
+    <string name="delete_storage">Lager löschen</string>
+    <string name="storage_name">Lagername</string>
+
+    <!-- General -->
+    <string name="name">Name</string>
+    <string name="description">Beschreibung</string>
+    <string name="created_at">Erstellt</string>
+    <string name="updated_at">Aktualisiert</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="delete">Löschen</string>
+    <string name="unknown">Unbekannt</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="remove">Entfernen</string>
+
+    <!-- Statistics -->
+    <string name="statistics">Statistik</string>
+    <string name="total_storages">Lager gesamt</string>
+    <string name="total_folders">Ordner gesamt</string>
+    <string name="total_items">Artikel gesamt</string>
+
+    <!-- Settings -->
+    <string name="settings">Einstellungen</string>
+    <string name="theme">Design</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="theme_system">System</string>
+    <string name="language">Sprache</string>
+    <string name="language_changed_restart">Sprache geändert. Die App wird neu gestartet.</string>
+
+    <!-- Import/Export -->
+    <string name="export_data">Daten exportieren</string>
+    <string name="import_data">Daten importieren</string>
+    <string name="import_mysql_dump">Import aus MySQL Dump</string>
+    <string name="export_success">Daten erfolgreich exportiert</string>
+    <string name="import_success">Daten erfolgreich importiert</string>
+    <string name="export_error">Fehler beim Exportieren</string>
+    <string name="import_error">Fehler beim Importieren</string>
+    <string name="import_warning_message">Warnung! Alle aktuellen Daten werden durch importierte Daten ersetzt. Diese Aktion kann nicht rückgängig gemacht werden. Fortfahren?</string>
+    <string name="import_continue">Trotzdem importieren</string>
+
+    <!-- Messages -->
+    <string name="mark_favorite">Zu Favoriten hinzufügen</string>
+    <string name="unmark_favorite">Aus Favoriten entfernen</string>
+    <string name="copy_description">Beschreibung kopieren</string>
+    <string name="warehouses">Lager</string>
+    <string name="recent_folders">Kürzlich verwendete Ordner</string>
+    <string name="marked_folders">Favoriten Ordner</string>
+    <string name="no_folders">Keine Ordner</string>
+    <string name="no_storages">Keine Lager</string>
+    <string name="delete_confirmation">Sind Sie sicher, dass Sie löschen möchten?</string>
+    <string name="delete_warning">Diese Aktion kann nicht rückgängig gemacht werden</string>
+    <string name="remove_from_favorites_confirmation">Aus Favoriten entfernen?</string>
+
+    <!-- Batch operations -->
+    <string name="batch_actions">Stapelaktionen</string>
+    <string name="select_mode">Auswahlmodus</string>
+    <string name="select_folders">Ordner auswählen</string>
+    <string name="selected">ausgewählt</string>
+    <string name="batch_rename">Ausgewählte umbenennen</string>
+    <string name="batch_move">In Lager verschieben</string>
+    <string name="batch_delete">Ausgewählte löschen</string>
+    <string name="cancel_selection">Auswahl abbrechen</string>
+    <string name="delete_folders">Ordner löschen</string>
+    <string name="delete_confirmation_multiple">%1$d Ordner löschen?</string>
+    <string name="previous">Zurück</string>
+    <string name="next">Weiter</string>
+
+    <!-- Dates -->
+    <string name="date_format">%1$s</string>
+</resources>
+
