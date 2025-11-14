@@ -2,6 +2,8 @@
 
 A specialized Android application for warehouse management, developed to meet specific user requirements for organizing and tracking folders and storage locations.
 
+<img src="https://github.com/user-attachments/assets/b69b251f-68a1-4aab-8b33-677ab38bdb04" width="20%">
+
 ## Features
 
 - **Folder Management**: Create, edit, delete, and organize folders with descriptions
