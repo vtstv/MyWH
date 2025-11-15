@@ -1,28 +1,31 @@
 package com.murr.mywh
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.murr.mywh.ui.components.AppDrawer
 import com.murr.mywh.ui.components.BottomBar
 import com.murr.mywh.ui.navigation.NavGraph
 import com.murr.mywh.ui.navigation.Screen
+import com.murr.mywh.ui.screens.PasswordLockScreen
 import com.murr.mywh.ui.theme.MyWHTheme
+import com.murr.mywh.utils.PasswordManager
 import com.murr.mywh.utils.PreferencesManager
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     private lateinit var preferencesManager: PreferencesManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,21 +43,29 @@ class MainActivity : ComponentActivity() {
             var fontScale by remember { mutableStateOf(initialFontScale) }
             var shouldRecreate by remember { mutableStateOf(false) }
 
+            val passwordManager = remember { PasswordManager(this) }
+            var isUnlocked by remember { mutableStateOf(!passwordManager.shouldAskPassword()) }
+
             MyWHTheme(
                 darkTheme = isDarkTheme,
                 fontScale = fontScale
             ) {
-                MyWHApp(
-                    onThemeChanged = {
-                        // Reload font scale in case it changed
-                        fontScale = preferencesManager.fontScale
-                        isDarkTheme = if (isDarkTheme) false else true
-                        preferencesManager.isDarkTheme = if (preferencesManager.isDarkTheme) false else true
-                    },
-                    onLanguageChanged = {
-                        shouldRecreate = true
-                    }
-                )
+                if (!isUnlocked) {
+                    PasswordLockScreen(
+                        onUnlocked = { isUnlocked = true }
+                    )
+                } else {
+                    MyWHApp(
+                        onThemeChanged = {
+                            // Reload all preferences from storage
+                            fontScale = preferencesManager.fontScale
+                            isDarkTheme = preferencesManager.isDarkTheme
+                        },
+                        onLanguageChanged = {
+                            shouldRecreate = true
+                        }
+                    )
+                }
             }
 
             if (shouldRecreate) {
@@ -122,6 +133,13 @@ fun MyWHApp(
                                 onValueChange = { searchQuery = it },
                                 placeholder = { Text(stringResource(R.string.search_hint)) },
                                 singleLine = true,
+                                trailingIcon = {
+                                    if (searchQuery.isNotEmpty()) {
+                                        IconButton(onClick = { searchQuery = "" }) {
+                                            Icon(Icons.Default.Close, contentDescription = "Clear search")
+                                        }
+                                    }
+                                },
                                 colors = TextFieldDefaults.colors(
                                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,

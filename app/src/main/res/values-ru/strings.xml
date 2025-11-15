@@ -123,5 +123,32 @@
     <string name="font_size_extra_large">Очень крупный</string>
     <string name="font_size_huge">Огромный</string>
     <string name="font_size_preview">Так будет выглядеть текст в приложении</string>
+
+    <!-- Security -->
+    <string name="security">Безопасность</string>
+    <string name="password_protection">Защита паролем</string>
+    <string name="password_protection_description">Защитить приложение паролем</string>
+    <string name="set_password">Установить пароль</string>
+    <string name="password">Пароль</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="remove_password">Удалить пароль</string>
+    <string name="remove_password_confirmation">Вы уверены, что хотите удалить защиту паролем?</string>
+    <string name="reask_password">Спрашивать пароль после</string>
+    <string name="interval_hour">1 Час</string>
+    <string name="interval_day">1 День</string>
+    <string name="interval_week">1 Неделя</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="enter_password_description">Пожалуйста, введите пароль для разблокировки приложения</string>
+    <string name="unlock">Разблокировать</string>
+    <string name="incorrect_password">Неверный пароль</string>
+
+    <!-- Biometric -->
+    <string name="biometric_unlock">Разблокировка отпечатком</string>
+    <string name="biometric_unlock_description">Используйте отпечаток пальца для разблокировки</string>
+    <string name="biometric_title">Разблокировать MyWH</string>
+    <string name="biometric_subtitle">Приложите палец к сканеру</string>
+    <string name="use_password">Использовать пароль</string>
+    <string name="use_biometric">Использовать отпечаток</string>
+    <string name="biometric_failed">Отпечаток не распознан</string>
 </resources>
 

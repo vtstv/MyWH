@@ -3,6 +3,7 @@ package com.murr.mywh.ui.screens
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.biometric.BiometricManager
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,10 +14,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.murr.mywh.R
 import com.murr.mywh.utils.ImportExportManager
+import com.murr.mywh.utils.PasswordManager
 import com.murr.mywh.utils.PreferencesManager
 import kotlinx.coroutines.launch
 
@@ -240,6 +244,17 @@ fun SettingsScreen(
 
         Divider(modifier = Modifier.padding(vertical = 8.dp))
 
+        // Security Section
+        Text(
+            text = stringResource(R.string.security),
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+
+        SecuritySettings()
+
+        Divider(modifier = Modifier.padding(vertical = 8.dp))
+
         // Import/Export Section
         Text(
             text = stringResource(R.string.data_management),
@@ -378,3 +393,322 @@ fun LanguageOption(
     }
 }
 
+@Composable
+fun SecuritySettings() {
+    val context = LocalContext.current
+    val passwordManager = remember { PasswordManager(context) }
+    val biometricManager = remember { BiometricManager.from(context) }
+
+    var hasPassword by remember { mutableStateOf(passwordManager.hasPassword()) }
+    var isPasswordEnabled by remember { mutableStateOf(passwordManager.isPasswordEnabled) }
+    var reaskInterval by remember { mutableStateOf(passwordManager.reaskInterval) }
+    var isBiometricEnabled by remember { mutableStateOf(passwordManager.isBiometricEnabled) }
+    var showSetPasswordDialog by remember { mutableStateOf(false) }
+    var showRemovePasswordDialog by remember { mutableStateOf(false) }
+    var showIntervalDialog by remember { mutableStateOf(false) }
+
+    // Check if biometric is available on device
+    val canUseBiometric = remember {
+        biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
+    }
+
+    // Password Protection Toggle
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.password_protection),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = stringResource(R.string.password_protection_description),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Switch(
+                checked = isPasswordEnabled && hasPassword,
+                onCheckedChange = { enabled ->
+                    if (enabled && !hasPassword) {
+                        showSetPasswordDialog = true
+                    } else if (!enabled && hasPassword) {
+                        showRemovePasswordDialog = true
+                    }
+                }
+            )
+        }
+    }
+
+    // Reask Interval Setting (only if password is enabled)
+    if (hasPassword && isPasswordEnabled) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Card(
+            onClick = { showIntervalDialog = true },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.reask_password),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = when (reaskInterval) {
+                            PasswordManager.INTERVAL_HOUR -> stringResource(R.string.interval_hour)
+                            PasswordManager.INTERVAL_DAY -> stringResource(R.string.interval_day)
+                            PasswordManager.INTERVAL_WEEK -> stringResource(R.string.interval_week)
+                            else -> stringResource(R.string.interval_hour)
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Icon(Icons.Default.ChevronRight, contentDescription = null)
+            }
+        }
+
+        // Biometric toggle (only if password is enabled and device supports it)
+        if (canUseBiometric) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.biometric_unlock),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = stringResource(R.string.biometric_unlock_description),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = isBiometricEnabled,
+                        onCheckedChange = { enabled ->
+                            isBiometricEnabled = enabled
+                            passwordManager.isBiometricEnabled = enabled
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    // Set Password Dialog
+    if (showSetPasswordDialog) {
+        SetPasswordDialog(
+            onDismiss = { showSetPasswordDialog = false },
+            onConfirm = { password ->
+                passwordManager.setPassword(password)
+                hasPassword = true
+                isPasswordEnabled = true
+                showSetPasswordDialog = false
+            }
+        )
+    }
+
+    // Remove Password Dialog
+    if (showRemovePasswordDialog) {
+        AlertDialog(
+            onDismissRequest = { showRemovePasswordDialog = false },
+            title = { Text(stringResource(R.string.remove_password)) },
+            text = { Text(stringResource(R.string.remove_password_confirmation)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        passwordManager.removePassword()
+                        hasPassword = false
+                        isPasswordEnabled = false
+                        showRemovePasswordDialog = false
+                    }
+                ) {
+                    Text(stringResource(R.string.remove))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRemovePasswordDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
+    // Interval Selection Dialog
+    if (showIntervalDialog) {
+        AlertDialog(
+            onDismissRequest = { showIntervalDialog = false },
+            title = { Text(stringResource(R.string.reask_password)) },
+            text = {
+                Column {
+                    IntervalOption(
+                        label = stringResource(R.string.interval_hour),
+                        isSelected = reaskInterval == PasswordManager.INTERVAL_HOUR,
+                        onClick = {
+                            passwordManager.reaskInterval = PasswordManager.INTERVAL_HOUR
+                            reaskInterval = PasswordManager.INTERVAL_HOUR
+                            showIntervalDialog = false
+                        }
+                    )
+                    IntervalOption(
+                        label = stringResource(R.string.interval_day),
+                        isSelected = reaskInterval == PasswordManager.INTERVAL_DAY,
+                        onClick = {
+                            passwordManager.reaskInterval = PasswordManager.INTERVAL_DAY
+                            reaskInterval = PasswordManager.INTERVAL_DAY
+                            showIntervalDialog = false
+                        }
+                    )
+                    IntervalOption(
+                        label = stringResource(R.string.interval_week),
+                        isSelected = reaskInterval == PasswordManager.INTERVAL_WEEK,
+                        onClick = {
+                            passwordManager.reaskInterval = PasswordManager.INTERVAL_WEEK
+                            reaskInterval = PasswordManager.INTERVAL_WEEK
+                            showIntervalDialog = false
+                        }
+                    )
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showIntervalDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun SetPasswordDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.set_password)) },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        errorMessage = null
+                    },
+                    label = { Text(stringResource(R.string.password)) },
+                    singleLine = true,
+                    visualTransformation = if (passwordVisible)
+                        VisualTransformation.None
+                    else
+                        PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = {
+                        confirmPassword = it
+                        errorMessage = null
+                    },
+                    label = { Text(stringResource(R.string.confirm_password)) },
+                    singleLine = true,
+                    visualTransformation = if (confirmPasswordVisible)
+                        VisualTransformation.None
+                    else
+                        PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                            Icon(
+                                if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    isError = errorMessage != null,
+                    supportingText = errorMessage?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    when {
+                        password.isEmpty() -> errorMessage = "Password cannot be empty"
+                        password.length < 4 -> errorMessage = "Password must be at least 4 characters"
+                        password != confirmPassword -> errorMessage = "Passwords do not match"
+                        else -> onConfirm(password)
+                    }
+                }
+            ) {
+                Text(stringResource(R.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+fun IntervalOption(
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected)
+                MaterialTheme.colorScheme.primaryContainer
+            else
+                MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.bodyLarge
+        )
+    }
+}

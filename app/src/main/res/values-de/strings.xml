@@ -123,5 +123,32 @@
     <string name="font_size_extra_large">Sehr groß</string>
     <string name="font_size_huge">Riesig</string>
     <string name="font_size_preview">So wird der Text in der App aussehen</string>
+
+    <!-- Security -->
+    <string name="security">Sicherheit</string>
+    <string name="password_protection">Passwortschutz</string>
+    <string name="password_protection_description">App mit Passwort schützen</string>
+    <string name="set_password">Passwort festlegen</string>
+    <string name="password">Passwort</string>
+    <string name="confirm_password">Passwort bestätigen</string>
+    <string name="remove_password">Passwort entfernen</string>
+    <string name="remove_password_confirmation">Möchten Sie den Passwortschutz wirklich entfernen?</string>
+    <string name="reask_password">Passwort erneut abfragen nach</string>
+    <string name="interval_hour">1 Stunde</string>
+    <string name="interval_day">1 Tag</string>
+    <string name="interval_week">1 Woche</string>
+    <string name="enter_password">Passwort eingeben</string>
+    <string name="enter_password_description">Bitte geben Sie Ihr Passwort ein, um die App zu entsperren</string>
+    <string name="unlock">Entsperren</string>
+    <string name="incorrect_password">Falsches Passwort</string>
+
+    <!-- Biometric -->
+    <string name="biometric_unlock">Fingerabdruck-Entsperrung</string>
+    <string name="biometric_unlock_description">Fingerabdruck zum Entsperren verwenden</string>
+    <string name="biometric_title">MyWH entsperren</string>
+    <string name="biometric_subtitle">Berühren Sie den Fingerabdrucksensor</string>
+    <string name="use_password">Passwort verwenden</string>
+    <string name="use_biometric">Fingerabdruck verwenden</string>
+    <string name="biometric_failed">Fingerabdruck nicht erkannt</string>
 </resources>
 

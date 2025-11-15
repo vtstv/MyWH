@@ -84,6 +84,9 @@ dependencies {
     // Gson for JSON
     implementation("com.google.code.gson:gson:2.10.1")
 
+    // Biometric authentication
+    implementation("androidx.biometric:biometric:1.1.0")
+
     // Legacy (for backward compatibility during migration)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)

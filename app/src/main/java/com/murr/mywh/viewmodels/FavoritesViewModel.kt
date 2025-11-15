@@ -41,10 +41,9 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun toggleFolderMarked(folder: Folder) {
         viewModelScope.launch {
-            // Create updated copy
+            // Create updated copy - don't update updatedAt for favorites
             val updatedFolder = folder.copy(
-                isMarked = !folder.isMarked,
-                updatedAt = System.currentTimeMillis()
+                isMarked = !folder.isMarked
             )
             folderRepository.updateFolder(updatedFolder)
 

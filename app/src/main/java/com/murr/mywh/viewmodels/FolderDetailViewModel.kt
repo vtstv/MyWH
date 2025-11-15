@@ -39,10 +39,13 @@ class FolderDetailViewModel(
     fun toggleFavorite() {
         viewModelScope.launch {
             _folder.value?.let { currentFolder ->
-                currentFolder.isMarked = !currentFolder.isMarked
-                currentFolder.updatedAt = System.currentTimeMillis()
-                folderRepository.updateFolder(currentFolder)
-                _folder.value = currentFolder
+                // Create updated copy - don't update updatedAt for favorites
+                val updatedFolder = currentFolder.copy(
+                    isMarked = !currentFolder.isMarked
+                )
+                folderRepository.updateFolder(updatedFolder)
+                // Force recomposition by setting new value
+                _folder.value = updatedFolder
             }
         }
     }
@@ -50,11 +53,14 @@ class FolderDetailViewModel(
     fun updateFolder(name: String, description: String) {
         viewModelScope.launch {
             _folder.value?.let { currentFolder ->
-                currentFolder.name = name
-                currentFolder.description = description
-                currentFolder.updatedAt = System.currentTimeMillis()
-                folderRepository.updateFolder(currentFolder)
-                _folder.value = currentFolder
+                // Use copy for immutability
+                val updatedFolder = currentFolder.copy(
+                    name = name,
+                    description = description,
+                    updatedAt = System.currentTimeMillis()
+                )
+                folderRepository.updateFolder(updatedFolder)
+                _folder.value = updatedFolder
             }
         }
     }

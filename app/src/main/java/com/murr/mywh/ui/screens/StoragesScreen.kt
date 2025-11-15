@@ -252,10 +252,12 @@ fun StorageCardWithActions(
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                    )
                 }
+            }
 
+            // Menu button with dropdown - wrapped in Box
+            Box {
                 IconButton(onClick = { showMenu = true }) {
                     Icon(Icons.Default.MoreVert, contentDescription = "More")
                 }
@@ -287,6 +289,7 @@ fun StorageCardWithActions(
                 }
             }
         }
+    }
     }
 }
 

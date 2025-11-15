@@ -141,4 +141,31 @@
     <string name="font_size_extra_large">Extra Large</string>
     <string name="font_size_huge">Huge</string>
     <string name="font_size_preview">This is how the text will look in the app</string>
+
+    <!-- Security -->
+    <string name="security">Security</string>
+    <string name="password_protection">Password Protection</string>
+    <string name="password_protection_description">Protect app with password</string>
+    <string name="set_password">Set Password</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="remove_password">Remove Password</string>
+    <string name="remove_password_confirmation">Are you sure you want to remove password protection?</string>
+    <string name="reask_password">Re-ask Password After</string>
+    <string name="interval_hour">1 Hour</string>
+    <string name="interval_day">1 Day</string>
+    <string name="interval_week">1 Week</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="enter_password_description">Please enter your password to unlock the app</string>
+    <string name="unlock">Unlock</string>
+    <string name="incorrect_password">Incorrect password</string>
+
+    <!-- Biometric -->
+    <string name="biometric_unlock">Fingerprint Unlock</string>
+    <string name="biometric_unlock_description">Use fingerprint to unlock app</string>
+    <string name="biometric_title">Unlock MyWH</string>
+    <string name="biometric_subtitle">Touch the fingerprint sensor</string>
+    <string name="use_password">Use Password</string>
+    <string name="use_biometric">Use Fingerprint</string>
+    <string name="biometric_failed">Fingerprint not recognized</string>
 </resources>
