@@ -9,11 +9,14 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.murr.mywh.database.entities.Folder
+import com.murr.mywh.utils.PreferencesManager
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,6 +31,8 @@ fun FolderCard(
     isSelected: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val preferencesManager = remember { PreferencesManager(context) }
     val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
 
     Card(
@@ -101,22 +106,27 @@ fun FolderCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Created: ${dateFormat.format(Date(folder.createdAt))}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            // Only show timestamps row if at least one is enabled
+            if (preferencesManager.showCreatedDate || preferencesManager.showUpdatedDate) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    if (preferencesManager.showCreatedDate) {
+                        Text(
+                            text = "Created: ${dateFormat.format(Date(folder.createdAt))}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
 
-                if (folder.updatedAt != folder.createdAt) {
-                    Text(
-                        text = "Updated: ${dateFormat.format(Date(folder.updatedAt))}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    if (preferencesManager.showUpdatedDate && folder.updatedAt != folder.createdAt) {
+                        Text(
+                            text = "Updated: ${dateFormat.format(Date(folder.updatedAt))}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
         }

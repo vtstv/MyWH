@@ -11,9 +11,11 @@
     <string name="nav_marked">Избранное</string>
     <string name="nav_statistics">Статистика</string>
     <string name="nav_settings">Настройки</string>
+    <string name="nav_lock">Заблокировать</string>
     <string name="nav_import">Импорт</string>
     <string name="nav_export">Экспорт</string>
     <string name="nav_about">О программе</string>
+    <string name="about">О программе</string>
 
     <!-- Search -->
     <string name="search_hint">Поиск папок и товаров</string>
@@ -56,6 +58,7 @@
     <string name="unknown">Неизвестно</string>
     <string name="edit">Редактировать</string>
     <string name="remove">Убрать</string>
+    <string name="add">Добавить</string>
 
     <!-- Statistics -->
     <string name="statistics">Статистика</string>
@@ -67,10 +70,22 @@
     <string name="settings">Настройки</string>
     <string name="theme">Тема</string>
     <string name="theme_light">Светлая</string>
-    <string name="theme_dark">Темная</string>
+    <string name="theme_dark">Тёмная</string>
     <string name="theme_system">Системная</string>
     <string name="language">Язык</string>
-    <string name="language_changed_restart">Язык изменен. Приложение будет перезапущено.</string>
+    <string name="language_changed_restart">Язык изменён. Приложение будет перезапущено.</string>
+    <string name="show_created_date">Показывать дату создания</string>
+    <string name="show_created_date_description">Отображать дату создания папки</string>
+    <string name="show_updated_date">Показывать дату изменения</string>
+    <string name="show_updated_date_description">Отображать дату последнего изменения</string>
+    <string name="debug_mode">Режим отладки</string>
+    <string name="debug_mode_description">Включить подробное логирование</string>
+    <string name="view_logs">Посмотреть логи</string>
+    <string name="clear_logs">Очистить логи</string>
+    <string name="export_logs">Экспортировать логи</string>
+    <string name="logs_cleared">Логи очищены</string>
+    <string name="logs_exported">Логи экспортированы</string>
+    <string name="no_logs">Логов нет. Включите режим отладки.</string>
 
     <!-- Import/Export -->
     <string name="export_data">Экспорт данных</string>

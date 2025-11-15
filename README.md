@@ -78,7 +78,7 @@ Script `sign-apk.ps1` creates keystore, signs, verifies, installs.
 
 Developed for specific needs, not for general distribution.
 
-**Author**: Murr  
+**Author**: Murr (vtstv)  
 **GitHub**: [github.com/vtstv/MyWH](https://github.com/vtstv/MyWH)  
 **Version**: 1.0
 

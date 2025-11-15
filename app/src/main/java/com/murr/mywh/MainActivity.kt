@@ -21,6 +21,7 @@ import com.murr.mywh.ui.navigation.NavGraph
 import com.murr.mywh.ui.navigation.Screen
 import com.murr.mywh.ui.screens.PasswordLockScreen
 import com.murr.mywh.ui.theme.MyWHTheme
+import com.murr.mywh.utils.DebugLogger
 import com.murr.mywh.utils.PasswordManager
 import com.murr.mywh.utils.PreferencesManager
 import kotlinx.coroutines.launch
@@ -33,6 +34,10 @@ class MainActivity : FragmentActivity() {
 
         preferencesManager = PreferencesManager(this)
         preferencesManager.applyLanguage()
+
+        // Initialize debug logger
+        DebugLogger.init(this)
+        DebugLogger.setEnabled(preferencesManager.isDebugMode)
 
         enableEdgeToEdge()
 

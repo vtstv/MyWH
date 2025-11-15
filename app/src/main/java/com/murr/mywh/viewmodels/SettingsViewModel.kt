@@ -10,6 +10,7 @@ import com.murr.mywh.R
 import com.murr.mywh.repositories.FolderRepository
 import com.murr.mywh.repositories.StorageRepository
 import com.murr.mywh.utils.DataManager
+import com.murr.mywh.utils.DebugLogger
 import com.murr.mywh.utils.MySQLDumpParser
 import kotlinx.coroutines.launch
 import java.io.File
@@ -59,12 +60,17 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun importDataFromUri(context: Context, uri: Uri) = viewModelScope.launch {
         try {
+            DebugLogger.log("importDataFromUri called with URI: $uri", force = true)
             val tempFile = File(context.cacheDir, "import_temp.json")
+            DebugLogger.log("Created temp file: ${tempFile.absolutePath}", force = true)
+            
             context.contentResolver.openInputStream(uri)?.use { input ->
                 FileOutputStream(tempFile).use { output ->
                     input.copyTo(output)
                 }
             }
+            
+            DebugLogger.log("Copied ${tempFile.length()} bytes to temp file", force = true)
 
             val success = dataManager.importData(tempFile)
             val message = if (success) {
@@ -76,6 +82,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
             tempFile.delete()
         } catch (e: Exception) {
+            DebugLogger.log("importDataFromUri exception", e, force = true)
             e.printStackTrace()
             Toast.makeText(context, context.getString(R.string.import_error), Toast.LENGTH_LONG).show()
         }

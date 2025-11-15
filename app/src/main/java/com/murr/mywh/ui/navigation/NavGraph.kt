@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.murr.mywh.ui.screens.AllFoldersScreen
+import com.murr.mywh.ui.screens.DebugLogsScreen
 import com.murr.mywh.ui.screens.FavoritesScreen
 import com.murr.mywh.ui.screens.FolderDetailScreen
 import com.murr.mywh.ui.screens.HomeScreen
@@ -61,6 +62,10 @@ fun NavGraph(
                 onThemeChanged = onThemeChanged,
                 onLanguageChanged = onLanguageChanged
             )
+        }
+
+        composable(Screen.DebugLogs.route) {
+            DebugLogsScreen(navController = navController)
         }
 
         composable(

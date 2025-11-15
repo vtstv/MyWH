@@ -15,6 +15,9 @@ class PreferencesManager(private val context: Context) {
         private const val KEY_THEME = "theme"
         private const val KEY_LANGUAGE = "language"
         private const val KEY_FONT_SCALE = "font_scale"
+        private const val KEY_SHOW_CREATED_DATE = "show_created_date"
+        private const val KEY_SHOW_UPDATED_DATE = "show_updated_date"
+        private const val KEY_DEBUG_MODE = "debug_mode"
 
         const val THEME_LIGHT = "light"
         const val THEME_DARK = "dark"
@@ -55,6 +58,25 @@ class PreferencesManager(private val context: Context) {
         get() = sharedPreferences.getFloat(KEY_FONT_SCALE, FONT_SCALE_NORMAL)
         set(value) {
             sharedPreferences.edit().putFloat(KEY_FONT_SCALE, value).apply()
+        }
+
+    var showCreatedDate: Boolean
+        get() = sharedPreferences.getBoolean(KEY_SHOW_CREATED_DATE, true)
+        set(value) {
+            sharedPreferences.edit().putBoolean(KEY_SHOW_CREATED_DATE, value).apply()
+        }
+
+    var showUpdatedDate: Boolean
+        get() = sharedPreferences.getBoolean(KEY_SHOW_UPDATED_DATE, true)
+        set(value) {
+            sharedPreferences.edit().putBoolean(KEY_SHOW_UPDATED_DATE, value).apply()
+        }
+
+    var isDebugMode: Boolean
+        get() = sharedPreferences.getBoolean(KEY_DEBUG_MODE, false)
+        set(value) {
+            sharedPreferences.edit().putBoolean(KEY_DEBUG_MODE, value).apply()
+            DebugLogger.setEnabled(value)
         }
 
     fun applyTheme(theme: String = this.theme) {

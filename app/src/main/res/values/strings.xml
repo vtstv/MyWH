@@ -12,6 +12,7 @@
     <string name="nav_favorites">Favorites</string>
     <string name="nav_statistics">Statistics</string>
     <string name="nav_settings">Settings</string>
+    <string name="nav_lock">Lock</string>
     <string name="nav_import">Import</string>
     <string name="nav_export">Export</string>
     <string name="nav_about">About</string>
@@ -88,6 +89,18 @@
     <string name="theme_system">System</string>
     <string name="language">Language</string>
     <string name="language_changed_restart">Language changed. The app will restart.</string>
+    <string name="show_created_date">Show Created Date</string>
+    <string name="show_created_date_description">Display folder creation date</string>
+    <string name="show_updated_date">Show Updated Date</string>
+    <string name="show_updated_date_description">Display folder last modified date</string>
+    <string name="debug_mode">Debug Mode</string>
+    <string name="debug_mode_description">Enable detailed logging for troubleshooting</string>
+    <string name="view_logs">View Debug Logs</string>
+    <string name="clear_logs">Clear Logs</string>
+    <string name="export_logs">Export Logs</string>
+    <string name="logs_cleared">Logs cleared</string>
+    <string name="logs_exported">Logs exported successfully</string>
+    <string name="no_logs">No logs available. Enable Debug Mode to start logging.</string>
 
     <!-- Import/Export -->
     <string name="export_data">Export Data</string>

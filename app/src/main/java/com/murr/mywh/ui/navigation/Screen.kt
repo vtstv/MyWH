@@ -7,6 +7,7 @@ sealed class Screen(val route: String) {
     object Favorites : Screen("favorites")
     object Statistics : Screen("statistics")
     object Settings : Screen("settings")
+    object DebugLogs : Screen("debug_logs")
     object FolderDetail : Screen("folder_detail/{storageId}/{folderId}") {
         fun createRoute(storageId: Long, folderId: Long) = "folder_detail/$storageId/$folderId"
     }

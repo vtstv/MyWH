@@ -16,8 +16,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.murr.mywh.MainActivity
 import com.murr.mywh.R
 import com.murr.mywh.ui.navigation.Screen
+import com.murr.mywh.utils.PasswordManager
 
 @Composable
 fun AppDrawer(
@@ -28,6 +30,7 @@ fun AppDrawer(
 ) {
     val context = LocalContext.current
     var showAboutDialog by remember { mutableStateOf(false) }
+    val passwordManager = remember { PasswordManager(context) }
 
     ModalDrawerSheet(modifier = modifier) {
         Spacer(Modifier.height(12.dp))
@@ -133,6 +136,25 @@ fun AppDrawer(
             },
             modifier = Modifier.padding(horizontal = 12.dp)
         )
+
+        // Spacer equivalent to one button height (48dp + padding)
+        Spacer(modifier = Modifier.height(56.dp))
+
+        // Lock (only show if password protection is enabled)
+        if (passwordManager.hasPassword() && passwordManager.isPasswordEnabled) {
+            NavigationDrawerItem(
+                icon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                label = { Text(stringResource(R.string.nav_lock)) },
+                selected = false,
+                onClick = {
+                    passwordManager.resetUnlockTime()
+                    closeDrawer()
+                    // The app will re-check and show lock screen
+                    (context as? MainActivity)?.recreate()
+                },
+                modifier = Modifier.padding(horizontal = 12.dp)
+            )
+        }
 
         Spacer(Modifier.weight(1f))
 

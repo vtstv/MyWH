@@ -11,9 +11,11 @@
     <string name="nav_marked">Favoriten</string>
     <string name="nav_statistics">Statistik</string>
     <string name="nav_settings">Einstellungen</string>
+    <string name="nav_lock">Sperren</string>
     <string name="nav_import">Importieren</string>
     <string name="nav_export">Exportieren</string>
     <string name="nav_about">Über</string>
+    <string name="about">Über</string>
 
     <!-- Search -->
     <string name="search_hint">Ordner und Artikel suchen</string>
@@ -56,6 +58,7 @@
     <string name="unknown">Unbekannt</string>
     <string name="edit">Bearbeiten</string>
     <string name="remove">Entfernen</string>
+    <string name="add">Hinzufügen</string>
 
     <!-- Statistics -->
     <string name="statistics">Statistik</string>
@@ -71,6 +74,18 @@
     <string name="theme_system">System</string>
     <string name="language">Sprache</string>
     <string name="language_changed_restart">Sprache geändert. Die App wird neu gestartet.</string>
+    <string name="show_created_date">Erstellungsdatum anzeigen</string>
+    <string name="show_created_date_description">Erstellungsdatum des Ordners anzeigen</string>
+    <string name="show_updated_date">Aktualisierungsdatum anzeigen</string>
+    <string name="show_updated_date_description">Letztes Änderungsdatum anzeigen</string>
+    <string name="debug_mode">Debug-Modus</string>
+    <string name="debug_mode_description">Detaillierte Protokollierung aktivieren</string>
+    <string name="view_logs">Logs anzeigen</string>
+    <string name="clear_logs">Logs löschen</string>
+    <string name="export_logs">Logs exportieren</string>
+    <string name="logs_cleared">Logs gelöscht</string>
+    <string name="logs_exported">Logs erfolgreich exportiert</string>
+    <string name="no_logs">Keine Logs verfügbar. Debug-Modus aktivieren.</string>
 
     <!-- Import/Export -->
     <string name="export_data">Daten exportieren</string>

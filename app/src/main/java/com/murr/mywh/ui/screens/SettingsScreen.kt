@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -44,6 +45,9 @@ fun SettingsScreen(
     var fontScale by remember {
         mutableStateOf(PreferencesManager.FONT_SCALE_NORMAL)
     }
+    var showCreatedDate by remember { mutableStateOf(false) }
+    var showUpdatedDate by remember { mutableStateOf(false) }
+    var isDebugMode by remember { mutableStateOf(false) }
     var showLanguageDialog by remember { mutableStateOf(false) }
     var showImportDialog by remember { mutableStateOf(false) }
 
@@ -51,6 +55,9 @@ fun SettingsScreen(
         isDarkTheme = preferencesManager.isDarkTheme
         currentLanguage = preferencesManager.language
         fontScale = preferencesManager.fontScale
+        showCreatedDate = preferencesManager.showCreatedDate
+        showUpdatedDate = preferencesManager.showUpdatedDate
+        isDebugMode = preferencesManager.isDebugMode
     }
 
     // Export launcher
@@ -244,6 +251,132 @@ fun SettingsScreen(
 
         Divider(modifier = Modifier.padding(vertical = 8.dp))
 
+        // Display Options Section
+        Text(
+            text = "Display Options",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+
+        // Show Created Date Toggle
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.show_created_date),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = stringResource(R.string.show_created_date_description),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Switch(
+                    checked = showCreatedDate,
+                    onCheckedChange = { 
+                        showCreatedDate = it
+                        preferencesManager.showCreatedDate = it
+                    }
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Show Updated Date Toggle
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.show_updated_date),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = stringResource(R.string.show_updated_date_description),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Switch(
+                    checked = showUpdatedDate,
+                    onCheckedChange = { 
+                        showUpdatedDate = it
+                        preferencesManager.showUpdatedDate = it
+                    }
+                )
+            }
+        }
+
+        Divider(modifier = Modifier.padding(vertical = 8.dp))
+
+        // Debug Section
+        Text(
+            text = "Debug",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+
+        // Debug Mode Toggle
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.debug_mode),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = stringResource(R.string.debug_mode_description),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Switch(
+                    checked = isDebugMode,
+                    onCheckedChange = { 
+                        isDebugMode = it
+                        preferencesManager.isDebugMode = it
+                    }
+                )
+            }
+        }
+
+        // View Logs Button (only show if debug mode is enabled)
+        if (isDebugMode) {
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Button(
+                onClick = {
+                    navController.navigate("debug_logs")
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Default.List, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(stringResource(R.string.view_logs))
+            }
+        }
+
+        Divider(modifier = Modifier.padding(vertical = 8.dp))
+
         // Security Section
         Text(
             text = stringResource(R.string.security),
@@ -290,30 +423,39 @@ fun SettingsScreen(
         AlertDialog(
             onDismissRequest = { showImportDialog = false },
             title = { Text(stringResource(R.string.import_data)) },
-            text = { Text(stringResource(R.string.import_warning_message)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showImportDialog = false
-                        importJsonLauncher.launch("application/json")
-                    }
-                ) {
-                    Text(stringResource(R.string.import_continue))
-                }
-            },
-            dismissButton = {
+            text = { 
                 Column {
-                    TextButton(
+                    Text(stringResource(R.string.import_warning_message))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    // Import buttons as vertical list for better layout with large fonts
+                    Button(
+                        onClick = {
+                            showImportDialog = false
+                            importJsonLauncher.launch("application/json")
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(stringResource(R.string.import_continue))
+                    }
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    OutlinedButton(
                         onClick = {
                             showImportDialog = false
                             importMySQLLauncher.launch("*/*")
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(stringResource(R.string.import_mysql_dump))
                     }
-                    TextButton(onClick = { showImportDialog = false }) {
-                        Text(stringResource(R.string.cancel))
-                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showImportDialog = false }) {
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
