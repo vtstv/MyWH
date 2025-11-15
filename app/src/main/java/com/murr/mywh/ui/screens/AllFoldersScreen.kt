@@ -12,10 +12,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.murr.mywh.R
+import com.murr.mywh.database.entities.Folder
 import com.murr.mywh.database.entities.Storage
 import com.murr.mywh.ui.components.FolderCard
 import com.murr.mywh.ui.navigation.Screen
@@ -241,4 +243,35 @@ fun BatchMoveDialog(
             }
         }
     )
+}
+
+// Preview functions
+@Preview(showBackground = true, name = "All Folders Content")
+@Composable
+fun AllFoldersScreenContentPreview() {
+    MaterialTheme {
+        Surface {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                contentPadding = PaddingValues(top = 8.dp, bottom = 80.dp)
+            ) {
+                items(15) { index ->
+                    FolderCard(
+                        folder = Folder(
+                            id = index.toLong(),
+                            name = "Folder ${index + 1}",
+                            description = "Sample folder description",
+                            storageId = (index % 3).toLong() + 1,
+                            isMarked = index % 4 == 0
+                        ),
+                        storageName = "Storage ${(index % 3) + 1}",
+                        onFolderClick = {},
+                        onFavoriteClick = {}
+                    )
+                }
+            }
+        }
+    }
 }

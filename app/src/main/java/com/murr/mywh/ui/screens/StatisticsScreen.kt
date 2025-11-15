@@ -10,6 +10,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -89,3 +90,43 @@ fun StatisticCard(title: String, value: String) {
     }
 }
 
+// Preview functions
+@Preview(showBackground = true, name = "Statistics Content")
+@Composable
+fun StatisticsScreenContentPreview() {
+    MaterialTheme {
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Statistics",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+
+                StatisticCard(
+                    title = "Total Folders",
+                    value = "42"
+                )
+
+                StatisticCard(
+                    title = "Total Storages",
+                    value = "5"
+                )
+
+                StatisticCard(
+                    title = "Favorite Folders",
+                    value = "8"
+                )
+
+                StatisticCard(
+                    title = "New Folders This Month",
+                    value = "12"
+                )
+            }
+        }
+    }
+}

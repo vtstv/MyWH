@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.murr.mywh.database.entities.Storage
 
@@ -75,3 +76,42 @@ fun StorageCard(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun StorageCardPreview() {
+    MaterialTheme {
+        Surface {
+            StorageCard(
+                storage = Storage(
+                    id = 1,
+                    name = "Main Warehouse",
+                    description = "Primary storage location for all items",
+                    createdAt = System.currentTimeMillis()
+                ),
+                folderCount = 15,
+                onClick = {},
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun StorageCardNoDescriptionPreview() {
+    MaterialTheme {
+        Surface {
+            StorageCard(
+                storage = Storage(
+                    id = 2,
+                    name = "Secondary Storage",
+                    description = "",
+                    createdAt = System.currentTimeMillis()
+                ),
+                folderCount = 3,
+                onClick = {},
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+}

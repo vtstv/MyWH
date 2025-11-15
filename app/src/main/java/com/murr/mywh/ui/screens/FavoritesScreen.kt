@@ -10,10 +10,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.murr.mywh.R
+import com.murr.mywh.database.entities.Folder
 import com.murr.mywh.ui.components.FolderCard
 import com.murr.mywh.ui.navigation.Screen
 import com.murr.mywh.viewmodels.FavoritesViewModel
@@ -90,3 +92,46 @@ fun FavoritesScreen(
     }
 }
 
+// Preview functions
+@Preview(showBackground = true, name = "Favorites Content")
+@Composable
+fun FavoritesScreenContentPreview() {
+    MaterialTheme {
+        Surface {
+            val favoriteFolders = listOf(
+                Folder(
+                    id = 1,
+                    name = "Important Documents",
+                    description = "Critical business documents",
+                    storageId = 1,
+                    isMarked = true,
+                    createdAt = System.currentTimeMillis() - 86400000,
+                    updatedAt = System.currentTimeMillis()
+                ),
+                Folder(
+                    id = 2,
+                    name = "Frequently Used",
+                    description = "Most accessed items",
+                    storageId = 2,
+                    isMarked = true
+                )
+            )
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                contentPadding = PaddingValues(top = 8.dp, bottom = 80.dp)
+            ) {
+                items(favoriteFolders) { folder ->
+                    FolderCard(
+                        folder = folder,
+                        storageName = "Main Storage",
+                        onFolderClick = {},
+                        onFavoriteClick = {}
+                    )
+                }
+            }
+        }
+    }
+}

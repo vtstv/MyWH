@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -349,3 +350,47 @@ fun EditStorageDialog(
     )
 }
 
+// Preview functions
+@Preview(showBackground = true, name = "Storages Content")
+@Composable
+fun StoragesScreenContentPreview() {
+    MaterialTheme {
+        Surface {
+            val storages = listOf(
+                Storage(
+                    id = 1,
+                    name = "Main Warehouse",
+                    description = "Primary storage location",
+                    createdAt = System.currentTimeMillis()
+                ),
+                Storage(
+                    id = 2,
+                    name = "Garage",
+                    description = "Secondary storage",
+                    createdAt = System.currentTimeMillis()
+                ),
+                Storage(
+                    id = 3,
+                    name = "Office Cabinet",
+                    description = "",
+                    createdAt = System.currentTimeMillis()
+                )
+            )
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
+                items(storages) { storage ->
+                    StorageCard(
+                        storage = storage,
+                        folderCount = (1..20).random(),
+                        onClick = {}
+                    )
+                }
+            }
+        }
+    }
+}

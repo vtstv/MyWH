@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.murr.mywh.database.entities.Folder
 import com.murr.mywh.utils.PreferencesManager
@@ -133,3 +134,51 @@ fun FolderCard(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun FolderCardPreview() {
+    MaterialTheme {
+        Surface {
+            FolderCard(
+                folder = Folder(
+                    id = 1,
+                    name = "Sample Folder",
+                    description = "This is a sample folder with some description that might be quite long and will be truncated",
+                    storageId = 1,
+                    isMarked = false,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
+                ),
+                storageName = "Main Storage",
+                onFolderClick = {},
+                onFavoriteClick = {},
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FolderCardSelectedPreview() {
+    MaterialTheme {
+        Surface {
+            FolderCard(
+                folder = Folder(
+                    id = 2,
+                    name = "Favorite Folder",
+                    description = "This folder is marked as favorite",
+                    storageId = 1,
+                    isMarked = true,
+                    createdAt = System.currentTimeMillis() - 86400000, // 1 day ago
+                    updatedAt = System.currentTimeMillis()
+                ),
+                storageName = "Storage 2",
+                onFolderClick = {},
+                onFavoriteClick = {},
+                isSelected = true,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+}

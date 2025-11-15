@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -349,3 +350,107 @@ fun AddFolderDialog(
     )
 }
 
+// Preview functions
+@Preview(showBackground = true, name = "Home Screen Content")
+@Composable
+fun HomeScreenContentPreview() {
+    MaterialTheme {
+        Surface {
+            val sampleFolders = listOf(
+                Folder(
+                    id = 1,
+                    name = "Electronics",
+                    description = "All electronic devices and components stored here",
+                    storageId = 1,
+                    isMarked = true,
+                    createdAt = System.currentTimeMillis() - 86400000,
+                    updatedAt = System.currentTimeMillis()
+                ),
+                Folder(
+                    id = 2,
+                    name = "Tools",
+                    description = "Hand tools and power tools",
+                    storageId = 2,
+                    isMarked = false
+                )
+            )
+
+            val sampleStorages = listOf(
+                Storage(id = 1, name = "Main Warehouse", description = "Primary storage"),
+                Storage(id = 2, name = "Garage", description = "Secondary storage")
+            )
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                contentPadding = PaddingValues(top = 8.dp, bottom = 80.dp)
+            ) {
+                item {
+                    Text(
+                        text = "Recent Folders",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+
+                items(sampleFolders) { folder ->
+                    FolderCard(
+                        folder = folder,
+                        storageName = sampleStorages.find { it.id == folder.storageId }?.name ?: "Unknown",
+                        onFolderClick = {},
+                        onFavoriteClick = {}
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Storages",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+
+                items(sampleStorages) { storage ->
+                    StorageCard(
+                        storage = storage,
+                        folderCount = sampleFolders.count { it.storageId == storage.id },
+                        onClick = {}
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Empty Home Content")
+@Composable
+fun HomeScreenEmptyContentPreview() {
+    MaterialTheme {
+        Surface {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.FolderOff,
+                        contentDescription = null,
+                        modifier = Modifier.size(64.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "No folders yet",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
+        }
+    }
+}

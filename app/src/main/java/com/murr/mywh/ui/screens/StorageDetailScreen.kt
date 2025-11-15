@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Store
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -13,10 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.murr.mywh.R
+import com.murr.mywh.database.entities.Folder
 import com.murr.mywh.ui.components.FolderCard
 import com.murr.mywh.ui.navigation.Screen
 import com.murr.mywh.viewmodels.StorageDetailViewModel
@@ -125,3 +128,84 @@ fun StorageDetailScreen(
     }
 }
 
+// Preview functions
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun StorageDetailScreenPreview() {
+    MaterialTheme {
+        Surface {
+            val sampleFolders = listOf(
+                Folder(
+                    id = 1,
+                    name = "Electronics",
+                    description = "All electronic devices",
+                    storageId = 1,
+                    isMarked = true
+                ),
+                Folder(
+                    id = 2,
+                    name = "Tools",
+                    description = "Hand and power tools",
+                    storageId = 1,
+                    isMarked = false
+                ),
+                Folder(
+                    id = 3,
+                    name = "Office Supplies",
+                    description = "Pens, papers, etc.",
+                    storageId = 1,
+                    isMarked = false
+                )
+            )
+
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Top Bar
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    tonalElevation = 3.dp
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Store,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Main Warehouse",
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                            Text(
+                                text = "Primary storage location",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+
+                // Folders List
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    items(sampleFolders) { folder ->
+                        FolderCard(
+                            folder = folder,
+                            storageName = "Main Warehouse",
+                            onFolderClick = {},
+                            onFavoriteClick = {}
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
