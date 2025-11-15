@@ -16,3 +16,12 @@
 local.properties
 AppIcons.zip
 *.log
+
+# Keystore files (do not commit!)
+*.keystore
+*.jks
+
+# Signed APKs
+*-signed.apk
+
+build_output.txt

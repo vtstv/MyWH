@@ -1,52 +1,87 @@
 # MyWH - Warehouse Management App
 
-A specialized Android application for warehouse management, developed to meet specific user requirements for organizing and tracking folders and storage locations.
+A specialized Android app for organizing and tracking folders and storage locations.
 
 <img src="https://github.com/user-attachments/assets/b69b251f-68a1-4aab-8b33-677ab38bdb04" width="20%">
 
-## Features
+## ✨ Features
 
-- **Folder Management**: Create, edit, delete, and organize folders with descriptions
-- **Storage Management**: Manage multiple storage locations and assign folders to them
-- **Search Functionality**: Quick search through folders and their contents
-- **Import/Export**: Support for JSON data export/import and MySQL dump import
-- **Multi-language Support**: English, Russian, and German localization
-- **Themes**: Dark and light theme options
-- **Statistics**: Overview of folders, storages, and usage statistics
-- **Favorites**: Mark important folders for quick access
+### 📂 Core Functionality
+- Folder management: Create, edit, delete, organize with descriptions
+- Storage management: Handle locations and assign folders
+- Batch operations: Move/delete multiple folders via long-press
+- Search: Real-time filtering with clear button
+- Favorites: Mark folders for quick access, synced across screens
 
-## Requirements
+### 🔐 Security
+- Password protection with SHA-256 encryption
+- Biometric authentication (fingerprint if supported)
+- Auto-lock: 1 hour / 1 day / 1 week intervals
 
-- Android API 24+ (Android 7.0)
-- Kotlin 1.8+
-- Room database for local storage
+### 🎨 Customization
+- Themes: Dark/light with purple/violet scheme
+- Languages: English, Russian, German
+- Accessibility: Font size 85%-150%
 
-## Installation
+### 💾 Data Management
+- Import/Export: JSON backup/restore, MySQL dump import
+- Statistics: Overview of folders, storages, metrics
+- Recent folders: Quick access to modified items
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/vtstv/MyWH.git
-   ```
+## 📱 Requirements
 
-2. Open in Android Studio
+- Android API 26+ (8.0 Oreo)
+- ~3 MB app size (Release)
+- Permissions: Biometric, storage access
 
-3. Build and run on device/emulator
+## 🚀 Installation
 
-## Usage
+### From APK
+1. Download latest from [Releases](https://github.com/vtstv/MyWH/releases)
+2. Install and grant permissions
 
-- **Home Screen**: View recent folders and quick access to main functions
-- **Folders Tab**: Browse and manage all folders with search
-- **Storages Tab**: Manage storage locations
-- **Favorites Tab**: Access marked folders
-- **Settings**: Configure themes, language, import/export data
+### Build from Source
 
-## Architecture
+**Prerequisites:** Android Studio Hedgehog 2023.1.1+, JDK 11+, SDK API 35
 
-- **MVVM Pattern**: ViewModels, LiveData, and Repository pattern
-- **Room Database**: Local SQLite database with entities for folders and storages
-- **Material Design**: Modern Android UI components
-- **Coroutines**: Asynchronous operations
+1. Clone: `git clone https://github.com/vtstv/MyWH.git && cd MyWH`
+2. Debug APK: `./gradlew assembleDebug`
+3. Release APK: `./gradlew assembleRelease`
+4. Sign: Use `sign-apk.ps1` or apksigner (debug keystore for testing)
+5. Install: `adb install app/build/outputs/apk/release/app-release-signed.apk`
 
-## License
+## 📖 Usage
 
-This project is developed for specific user requirements and is not intended for general distribution.
+### APK Signing
+Script `sign-apk.ps1` creates keystore, signs, verifies, installs. 
+
+### Main Screens
+- Home: Recent folders, storages
+- All Folders: Paginated list (30/page)
+- Storages: Manage locations
+- Favorites: Marked folders
+- Statistics: Metrics
+- Settings: Customize app
+
+### Tips
+- Long-press for batch mode
+- Swipe to refresh
+- Search bar for filtering, clear with X
+- Enable password + biometric
+
+## 🏗️ Architecture
+
+### Tech Stack
+- Kotlin, Jetpack Compose + Material 3, MVVM, Room, Coroutines + Flow, Compose Navigation, Manual DI, BiometricPrompt + SHA-256
+
+## 📄 License
+
+Developed for specific needs, not for general distribution.
+
+**Author**: Murr  
+**GitHub**: [github.com/vtstv/MyWH](https://github.com/vtstv/MyWH)  
+**Version**: 1.0
+
+---
+
+Specialized for personal warehouse management.

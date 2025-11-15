@@ -14,8 +14,8 @@ class FolderDetailViewModel(
     private val folderRepository = FolderRepository(application)
     private val storageRepository = StorageRepository(application)
 
-    private val _folder = MutableLiveData<Folder>()
-    val folder: LiveData<Folder> = _folder
+    private val _folder = MutableLiveData<Folder?>()
+    val folder: LiveData<Folder?> = _folder
 
     private val _storageName = MutableLiveData<String>()
     val storageName: LiveData<String> = _storageName
