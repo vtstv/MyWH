@@ -45,11 +45,23 @@ interface FolderDao {
     @Query("DELETE FROM folders WHERE id = :id")
     suspend fun deleteFolderById(id: Long)
 
+    @Query("DELETE FROM folders WHERE id IN (:ids)")
+    suspend fun deleteFoldersByIds(ids: List<Long>)
+
+    @Query("UPDATE folders SET storageId = :newStorageId, updatedAt = :updatedAt WHERE id IN (:ids)")
+    suspend fun moveFoldersToStorage(ids: List<Long>, newStorageId: Long, updatedAt: Long)
+
+    @Query("UPDATE folders SET isMarked = :isMarked, updatedAt = :updatedAt WHERE id IN (:ids)")
+    suspend fun updateFoldersMarkedStatus(ids: List<Long>, isMarked: Boolean, updatedAt: Long)
+
     @Query("SELECT COUNT(*) FROM folders")
     suspend fun getFolderCount(): Int
 
     @Query("SELECT COUNT(*) FROM folders WHERE isMarked = 1")
     suspend fun getMarkedFolderCount(): Int
+
+    @Query("SELECT COUNT(*) FROM folders WHERE createdAt >= :timestamp")
+    suspend fun getFoldersCreatedAfter(timestamp: Long): Int
 
     @Query("SELECT COUNT(*) FROM folders WHERE storageId = :storageId")
     suspend fun getFolderCountByStorage(storageId: Long): Int

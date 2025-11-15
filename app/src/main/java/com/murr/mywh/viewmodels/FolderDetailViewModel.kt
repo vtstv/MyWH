@@ -1,100 +1,83 @@
 package com.murr.mywh.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.murr.mywh.database.entities.Folder
-import com.murr.mywh.database.entities.Storage
 import com.murr.mywh.repositories.FolderRepository
 import com.murr.mywh.repositories.StorageRepository
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class FolderDetailViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = FolderRepository(application)
+class FolderDetailViewModel(
+    application: Application,
+    private val folderId: Long
+) : AndroidViewModel(application) {
+    private val folderRepository = FolderRepository(application)
     private val storageRepository = StorageRepository(application)
 
-    private val _currentFolder = MutableLiveData<Folder?>()
-    val currentFolder: LiveData<Folder?> = _currentFolder
-
-    private val _subFolders = MutableLiveData<List<Folder>>()
-    val subFolders: LiveData<List<Folder>> = _subFolders
+    private val _folder = MutableLiveData<Folder>()
+    val folder: LiveData<Folder> = _folder
 
     private val _storageName = MutableLiveData<String>()
     val storageName: LiveData<String> = _storageName
 
-    private var currentFolderId: Long = -1L
+    init {
+        loadFolder()
+    }
 
-    fun loadFolder(folderId: Long) {
-        currentFolderId = folderId
+    private fun loadFolder() {
         viewModelScope.launch {
-            repository.getFolderById(folderId)?.let { folder ->
-                _currentFolder.value = folder
-                loadSubFolders(folderId)
+            val folderData = folderRepository.getFolderById(folderId)
+            _folder.value = folderData
+
+            folderData?.let {
+                val storage = storageRepository.getStorageById(it.storageId)
+                _storageName.value = storage?.name ?: ""
             }
         }
     }
 
-    private fun loadSubFolders(parentId: Long) {
+    fun toggleFavorite() {
         viewModelScope.launch {
-            repository.getSubFolders(parentId).collect { folders ->
-                _subFolders.value = folders
+            _folder.value?.let { currentFolder ->
+                currentFolder.isMarked = !currentFolder.isMarked
+                currentFolder.updatedAt = System.currentTimeMillis()
+                folderRepository.updateFolder(currentFolder)
+                _folder.value = currentFolder
             }
         }
     }
 
-    fun searchSubFolders(query: String) {
+    fun updateFolder(name: String, description: String) {
         viewModelScope.launch {
-            if (query.isEmpty()) {
-                loadSubFolders(currentFolderId)
-            } else {
-                // Show ALL matching folders, like on main page
-                repository.searchFolders(query).collect { folders ->
-                    _subFolders.value = folders
-                }
+            _folder.value?.let { currentFolder ->
+                currentFolder.name = name
+                currentFolder.description = description
+                currentFolder.updatedAt = System.currentTimeMillis()
+                folderRepository.updateFolder(currentFolder)
+                _folder.value = currentFolder
             }
         }
     }
 
-    fun addSubFolder(storageId: Long, parentId: Long, name: String, description: String) = viewModelScope.launch {
-        val folder = Folder(
-            name = name,
-            description = description,
-            storageId = storageId,
-            parentFolderId = parentId
-        )
-        repository.insertFolder(folder)
-        loadSubFolders(parentId)
-    }
-
-    fun loadStorageName(storageId: Long) = viewModelScope.launch {
-        storageRepository.getStorageById(storageId)?.let { storage ->
-            _storageName.postValue(storage.name)
+    fun deleteFolder() {
+        viewModelScope.launch {
+            _folder.value?.let { currentFolder ->
+                folderRepository.deleteFolder(currentFolder)
+            }
         }
     }
+}
 
-    fun loadAllStorages(callback: (List<Storage>) -> Unit) = viewModelScope.launch {
-        val storages = storageRepository.getAllStorages().first()
-        callback(storages)
-    }
-
-    fun updateFolder(folder: Folder) = viewModelScope.launch {
-        repository.updateFolder(folder)
-        _currentFolder.postValue(folder)
-    }
-
-    fun deleteFolder(folder: Folder) = viewModelScope.launch {
-        repository.deleteFolder(folder)
-        loadSubFolders(currentFolderId)
-    }
-
-    fun toggleFolderMark(folder: Folder) = viewModelScope.launch {
-        folder.isMarked = !folder.isMarked
-        folder.updatedAt = System.currentTimeMillis()
-        repository.updateFolder(folder)
-        loadSubFolders(currentFolderId)
+class FolderDetailViewModelFactory(
+    private val application: Application,
+    private val folderId: Long
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(FolderDetailViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return FolderDetailViewModel(application, folderId) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
 

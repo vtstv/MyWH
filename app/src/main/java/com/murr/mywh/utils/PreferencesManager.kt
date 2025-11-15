@@ -37,6 +37,12 @@ class PreferencesManager(private val context: Context) {
             sharedPreferences.edit().putString(KEY_LANGUAGE, value).apply()
             applyLanguage(value)
         }
+    
+    var isDarkTheme: Boolean
+        get() = theme == THEME_DARK
+        set(value) {
+            theme = if (value) THEME_DARK else THEME_LIGHT
+        }
 
     fun applyTheme(theme: String = this.theme) {
         when (theme) {

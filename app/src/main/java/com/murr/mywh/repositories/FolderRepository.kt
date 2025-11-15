@@ -63,6 +63,22 @@ class FolderRepository(application: Application) {
         folderDao.getMarkedFolderCount()
     }
 
+    suspend fun getFoldersCreatedAfter(timestamp: Long): Int = withContext(Dispatchers.IO) {
+        folderDao.getFoldersCreatedAfter(timestamp)
+    }
+
+    suspend fun deleteFoldersByIds(ids: List<Long>) = withContext(Dispatchers.IO) {
+        folderDao.deleteFoldersByIds(ids)
+    }
+
+    suspend fun moveFoldersToStorage(ids: List<Long>, newStorageId: Long) = withContext(Dispatchers.IO) {
+        folderDao.moveFoldersToStorage(ids, newStorageId, System.currentTimeMillis())
+    }
+
+    suspend fun updateFoldersMarkedStatus(ids: List<Long>, isMarked: Boolean) = withContext(Dispatchers.IO) {
+        folderDao.updateFoldersMarkedStatus(ids, isMarked, System.currentTimeMillis())
+    }
+
     companion object {
         const val ITEMS_PER_PAGE = 25
     }
