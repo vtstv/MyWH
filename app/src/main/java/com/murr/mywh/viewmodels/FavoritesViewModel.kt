@@ -11,7 +11,8 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
     private val folderRepository = FolderRepository(application)
     private val storageRepository = StorageRepository(application)
 
-    val markedFolders: LiveData<List<Folder>> = folderRepository.getMarkedFolders().asLiveData()
+    private val _markedFolders = MutableLiveData<List<Folder>>()
+    val markedFolders: LiveData<List<Folder>> = _markedFolders
 
     val storages = storageRepository.getAllStorages().asLiveData()
     val storageMap: LiveData<Map<Long, String>> = storages.map { storageList ->
@@ -20,6 +21,15 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val _searchResults = MutableLiveData<List<Folder>>(emptyList())
     val searchResults: LiveData<List<Folder>> = _searchResults
+
+    init {
+        // Load marked folders initially
+        viewModelScope.launch {
+            folderRepository.getMarkedFolders().collect { folders ->
+                _markedFolders.value = folders
+            }
+        }
+    }
 
     fun search(query: String) {
         viewModelScope.launch {
@@ -31,9 +41,22 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun toggleFolderMarked(folder: Folder) {
         viewModelScope.launch {
-            folder.isMarked = !folder.isMarked
-            folder.updatedAt = System.currentTimeMillis()
-            folderRepository.updateFolder(folder)
+            // Create updated copy
+            val updatedFolder = folder.copy(
+                isMarked = !folder.isMarked,
+                updatedAt = System.currentTimeMillis()
+            )
+            folderRepository.updateFolder(updatedFolder)
+
+            // Force refresh the list
+            _markedFolders.value = _markedFolders.value?.map {
+                if (it.id == folder.id) updatedFolder else it
+            }?.filter { it.isMarked } // Remove if unmarked
+
+            // Also update search results if present
+            _searchResults.value = _searchResults.value?.map {
+                if (it.id == folder.id) updatedFolder else it
+            }?.filter { it.isMarked }
         }
     }
 }

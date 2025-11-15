@@ -112,5 +112,16 @@
 
     <!-- Dates -->
     <string name="date_format">%1$s</string>
+
+    <!-- Font Size Settings -->
+    <string name="font_size">Schriftgröße</string>
+    <string name="font_size_description">Textgröße für bessere Lesbarkeit anpassen</string>
+    <string name="font_size_label">Aktuell: %1$s</string>
+    <string name="font_size_small">Klein</string>
+    <string name="font_size_normal">Normal</string>
+    <string name="font_size_large">Groß</string>
+    <string name="font_size_extra_large">Sehr groß</string>
+    <string name="font_size_huge">Riesig</string>
+    <string name="font_size_preview">So wird der Text in der App aussehen</string>
 </resources>
 

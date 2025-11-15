@@ -112,5 +112,16 @@
 
     <!-- Dates -->
     <string name="date_format">%1$s</string>
+
+    <!-- Font Size Settings -->
+    <string name="font_size">Размер шрифта</string>
+    <string name="font_size_description">Настройте размер текста для лучшей читаемости</string>
+    <string name="font_size_label">Текущий: %1$s</string>
+    <string name="font_size_small">Мелкий</string>
+    <string name="font_size_normal">Обычный</string>
+    <string name="font_size_large">Крупный</string>
+    <string name="font_size_extra_large">Очень крупный</string>
+    <string name="font_size_huge">Огромный</string>
+    <string name="font_size_preview">Так будет выглядеть текст в приложении</string>
 </resources>
 

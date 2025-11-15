@@ -14,6 +14,7 @@ class PreferencesManager(private val context: Context) {
         private const val PREFS_NAME = "mywh_preferences"
         private const val KEY_THEME = "theme"
         private const val KEY_LANGUAGE = "language"
+        private const val KEY_FONT_SCALE = "font_scale"
 
         const val THEME_LIGHT = "light"
         const val THEME_DARK = "dark"
@@ -22,6 +23,12 @@ class PreferencesManager(private val context: Context) {
         const val LANG_EN = "en"
         const val LANG_RU = "ru"
         const val LANG_DE = "de"
+
+        const val FONT_SCALE_SMALL = 0.85f
+        const val FONT_SCALE_NORMAL = 1.0f
+        const val FONT_SCALE_LARGE = 1.15f
+        const val FONT_SCALE_EXTRA_LARGE = 1.3f
+        const val FONT_SCALE_HUGE = 1.5f
     }
 
     var theme: String
@@ -42,6 +49,12 @@ class PreferencesManager(private val context: Context) {
         get() = theme == THEME_DARK
         set(value) {
             theme = if (value) THEME_DARK else THEME_LIGHT
+        }
+
+    var fontScale: Float
+        get() = sharedPreferences.getFloat(KEY_FONT_SCALE, FONT_SCALE_NORMAL)
+        set(value) {
+            sharedPreferences.edit().putFloat(KEY_FONT_SCALE, value).apply()
         }
 
     fun applyTheme(theme: String = this.theme) {

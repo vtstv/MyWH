@@ -37,12 +37,16 @@ fun SettingsScreen(
     var currentLanguage by remember {
         mutableStateOf(PreferencesManager.LANG_EN)
     }
+    var fontScale by remember {
+        mutableStateOf(PreferencesManager.FONT_SCALE_NORMAL)
+    }
     var showLanguageDialog by remember { mutableStateOf(false) }
     var showImportDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         isDarkTheme = preferencesManager.isDarkTheme
         currentLanguage = preferencesManager.language
+        fontScale = preferencesManager.fontScale
     }
 
     // Export launcher
@@ -166,6 +170,71 @@ fun SettingsScreen(
                     )
                 }
                 Icon(Icons.Default.ChevronRight, contentDescription = null)
+            }
+        }
+
+        // Font Size Setting
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.font_size),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = stringResource(R.string.font_size_description),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                // Font size slider
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = stringResource(R.string.font_size_label,
+                                when (fontScale) {
+                                    PreferencesManager.FONT_SCALE_SMALL -> stringResource(R.string.font_size_small)
+                                    PreferencesManager.FONT_SCALE_NORMAL -> stringResource(R.string.font_size_normal)
+                                    PreferencesManager.FONT_SCALE_LARGE -> stringResource(R.string.font_size_large)
+                                    PreferencesManager.FONT_SCALE_EXTRA_LARGE -> stringResource(R.string.font_size_extra_large)
+                                    PreferencesManager.FONT_SCALE_HUGE -> stringResource(R.string.font_size_huge)
+                                    else -> stringResource(R.string.font_size_normal)
+                                }
+                            ),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+
+                    Slider(
+                        value = fontScale,
+                        onValueChange = { newScale ->
+                            fontScale = newScale
+                        },
+                        onValueChangeFinished = {
+                            preferencesManager.fontScale = fontScale
+                            onThemeChanged() // Trigger recreation to apply font scale
+                        },
+                        valueRange = PreferencesManager.FONT_SCALE_SMALL..PreferencesManager.FONT_SCALE_HUGE,
+                        steps = 3, // Small, Normal, Large, Extra Large, Huge (5 options = 3 steps between)
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    // Preview text
+                    Text(
+                        text = stringResource(R.string.font_size_preview),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = MaterialTheme.typography.bodyMedium.fontSize * fontScale
+                        ),
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
             }
         }
 

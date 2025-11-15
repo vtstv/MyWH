@@ -96,9 +96,22 @@ class AllFoldersViewModel(application: Application) : AndroidViewModel(applicati
 
     fun toggleFolderMarked(folder: Folder) {
         viewModelScope.launch {
-            folder.isMarked = !folder.isMarked
-            folder.updatedAt = System.currentTimeMillis()
-            folderRepository.updateFolder(folder)
+            // Create updated copy
+            val updatedFolder = folder.copy(
+                isMarked = !folder.isMarked,
+                updatedAt = System.currentTimeMillis()
+            )
+            folderRepository.updateFolder(updatedFolder)
+
+            // Force refresh the list
+            _folders.value = _folders.value?.map {
+                if (it.id == folder.id) updatedFolder else it
+            }
+
+            // Also update search results if present
+            _searchResults.value = _searchResults.value?.map {
+                if (it.id == folder.id) updatedFolder else it
+            }
         }
     }
 }

@@ -35,12 +35,19 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val initialDarkTheme = remember { preferencesManager.isDarkTheme }
+            val initialFontScale = remember { preferencesManager.fontScale }
             var isDarkTheme by remember { mutableStateOf(initialDarkTheme) }
+            var fontScale by remember { mutableStateOf(initialFontScale) }
             var shouldRecreate by remember { mutableStateOf(false) }
 
-            MyWHTheme(darkTheme = isDarkTheme) {
+            MyWHTheme(
+                darkTheme = isDarkTheme,
+                fontScale = fontScale
+            ) {
                 MyWHApp(
                     onThemeChanged = {
+                        // Reload font scale in case it changed
+                        fontScale = preferencesManager.fontScale
                         isDarkTheme = if (isDarkTheme) false else true
                         preferencesManager.isDarkTheme = if (preferencesManager.isDarkTheme) false else true
                     },
