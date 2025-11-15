@@ -75,12 +75,12 @@ class DataManager(private val context: Context) {
                     DebugLogger.log("Parsed JSON: ${importData.storages.size} storages, ${importData.folders.size} folders", force = true)
                     Log.d("DataManager", "Importing ${importData.storages.size} storages and ${importData.folders.size} folders")
 
-                    // Очищаем текущие данные
+                    // Clear existing data
                     DebugLogger.log("Clearing database...", force = true)
                     database.clearAllTables()
                     DebugLogger.log("Database cleared", force = true)
 
-                    // Используем raw query для вставки с сохранением ID
+                    // Use raw SQL query to insert with preserved IDs
                     database.runInTransaction {
                         DebugLogger.log("Transaction started", force = true)
                         // Insert storages with original IDs

@@ -105,8 +105,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun importData(context: Context) = viewModelScope.launch {
-        // TODO: Открыть файловый менеджер для выбора файла
-        // Пока просто показываем сообщение
+        // TODO: Open file manager to select file
+        // For now just show a message
         Toast.makeText(context, "Import functionality - select file", Toast.LENGTH_SHORT).show()
     }
 }

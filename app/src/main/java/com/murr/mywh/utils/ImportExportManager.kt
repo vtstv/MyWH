@@ -3,7 +3,6 @@ package com.murr.mywh.utils
 import android.content.Context
 import android.net.Uri
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.murr.mywh.database.AppDatabase
 import com.murr.mywh.database.entities.Folder
 import com.murr.mywh.database.entities.Storage
@@ -60,8 +59,13 @@ class ImportExportManager(private val context: Context) {
             DebugLogger.log("JSON length: ${json.length} chars", force = true)
             DebugLogger.log("JSON preview: ${json.take(200)}", force = true)
 
-            val type = object : TypeToken<DatabaseExport>() {}.type
-            val export: DatabaseExport = gson.fromJson(json, type)
+            // Parse without TypeToken to avoid ProGuard issues
+            val export: DatabaseExport? = try {
+                gson.fromJson(json, DatabaseExport::class.java)
+            } catch (e: Exception) {
+                DebugLogger.log("ERROR: Failed to parse JSON", e, force = true)
+                null
+            }
             
             if (export == null) {
                 DebugLogger.log("ERROR: Failed to parse JSON - export is null", force = true)

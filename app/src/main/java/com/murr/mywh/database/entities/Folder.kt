@@ -23,7 +23,7 @@ data class Folder(
     var name: String,
     var description: String = "",
     var storageId: Long,
-    var parentFolderId: Long? = null, // Для вложенных папок
+    var parentFolderId: Long? = null, // For nested folders
     var isMarked: Boolean = false,
     var createdAt: Long = System.currentTimeMillis(),
     var updatedAt: Long = System.currentTimeMillis()

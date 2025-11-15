@@ -2,7 +2,7 @@
 
 A specialized Android app for organizing and tracking folders and storage locations.
 
-<img src="https://github.com/user-attachments/assets/b69b251f-68a1-4aab-8b33-677ab38bdb04" width="20%">
+<img src="https://github.com/user-attachments/assets/f9161d03-09c6-4f19-a8ed-35bc781c3273" width="20%">
 
 ## ✨ Features
 

@@ -1,7 +1,7 @@
 package com.murr.mywh.repositories
 
-// ProductRepository больше не используется, так как продукты объединены с папками
-// Класс оставлен пустым для совместимости при миграции
+// ProductRepository is no longer used since products have been merged with folders
+// Class kept empty for migration compatibility
 
 class ProductRepository(application: android.app.Application) {
     // Empty - functionality moved to FolderRepository
