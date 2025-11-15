@@ -13,7 +13,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val folderRepository = FolderRepository(application)
     private val storageRepository = StorageRepository(application)
 
-    val recentFolders: LiveData<List<Folder>> = folderRepository.getRecentFolders(10).asLiveData()
+    // Use MutableLiveData to trigger updates
+    private val _recentFolders = MutableLiveData<List<Folder>>()
+    val recentFolders: LiveData<List<Folder>> = _recentFolders
+
     val storages: LiveData<List<Storage>> = storageRepository.getAllStorages().asLiveData()
 
     val storageMap: LiveData<Map<Long, String>> = storages.map { storageList ->
@@ -22,6 +25,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _searchResults = MutableLiveData<List<Folder>>(emptyList())
     val searchResults: LiveData<List<Folder>> = _searchResults
+
+    init {
+        // Load recent folders initially
+        viewModelScope.launch {
+            folderRepository.getRecentFolders(10).collect { folders ->
+                _recentFolders.value = folders
+            }
+        }
+    }
 
     fun search(query: String) {
         viewModelScope.launch {
@@ -33,9 +45,23 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun toggleFolderMarked(folder: Folder) {
         viewModelScope.launch {
-            folder.isMarked = !folder.isMarked
-            folder.updatedAt = System.currentTimeMillis()
-            folderRepository.updateFolder(folder)
+            // Update in database
+            val updatedFolder = folder.copy(
+                isMarked = !folder.isMarked,
+                updatedAt = System.currentTimeMillis()
+            )
+            folderRepository.updateFolder(updatedFolder)
+
+            // Force refresh the list
+            _recentFolders.value = _recentFolders.value?.map {
+                if (it.id == folder.id) updatedFolder else it
+            }
+        }
+    }
+
+    fun deleteFolder(folder: Folder) {
+        viewModelScope.launch {
+            folderRepository.deleteFolder(folder)
         }
     }
 
@@ -49,6 +75,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 updatedAt = System.currentTimeMillis()
             )
             folderRepository.insertFolder(folder)
+        }
+    }
+
+    fun moveFolder(folder: Folder, newStorageId: Long) {
+        viewModelScope.launch {
+            folder.storageId = newStorageId
+            folder.updatedAt = System.currentTimeMillis()
+            folderRepository.updateFolder(folder)
         }
     }
 }

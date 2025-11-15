@@ -7,6 +7,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -23,6 +27,7 @@ fun AppDrawer(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    var showAboutDialog by remember { mutableStateOf(false) }
 
     ModalDrawerSheet(modifier = modifier) {
         Spacer(Modifier.height(12.dp))
@@ -137,14 +142,16 @@ fun AppDrawer(
             label = { Text(stringResource(R.string.about)) },
             selected = false,
             onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/vtstv/MyWH"))
-                context.startActivity(intent)
+                showAboutDialog = true
                 closeDrawer()
             },
             modifier = Modifier.padding(horizontal = 12.dp)
         )
+    }
 
-        Spacer(Modifier.height(12.dp))
+    // About Dialog
+    if (showAboutDialog) {
+        AboutDialog(onDismiss = { showAboutDialog = false })
     }
 }
 

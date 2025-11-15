@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -24,7 +24,9 @@ import com.murr.mywh.ui.components.StorageCard
 import com.murr.mywh.ui.navigation.Screen
 import com.murr.mywh.viewmodels.HomeViewModel
 import com.murr.mywh.viewmodels.HomeViewModelFactory
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -40,7 +42,11 @@ fun HomeScreen(
 
     var showAddFolderDialog by remember { mutableStateOf(false) }
     var selectedFolders by remember { mutableStateOf<Set<Long>>(emptySet()) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var showMoveDialog by remember { mutableStateOf(false) }
     val isSelectionMode = selectedFolders.isNotEmpty()
+
+    val scope = rememberCoroutineScope()
 
     // Update search when query changes
     LaunchedEffect(searchQuery) {
@@ -51,7 +57,41 @@ fun HomeScreen(
 
     val displayFolders = if (searchQuery.isNotEmpty()) searchResults else recentFolders
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Selection Mode Actions Bar
+        if (isSelectionMode) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                tonalElevation = 3.dp
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextButton(onClick = { selectedFolders = emptySet() }) {
+                        Text(stringResource(R.string.cancel))
+                    }
+
+                    Text(
+                        text = "${selectedFolders.size} ${stringResource(R.string.selected)}",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        IconButton(onClick = { showMoveDialog = true }) {
+                            Icon(Icons.Default.DriveFileMove, contentDescription = "Move")
+                        }
+                        IconButton(onClick = { showDeleteDialog = true }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Delete")
+                        }
+                    }
+                }
+            }
+        }
+
+        Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -152,6 +192,57 @@ fun HomeScreen(
         ) {
             Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_folder))
         }
+        }
+    }
+
+    // Delete Dialog
+    if (showDeleteDialog && selectedFolders.isNotEmpty()) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(stringResource(R.string.delete_folders)) },
+            text = { Text(stringResource(R.string.delete_confirmation_multiple, selectedFolders.size)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        scope.launch {
+                            selectedFolders.forEach { folderId ->
+                                displayFolders.find { it.id == folderId }?.let { folder ->
+                                    viewModel.deleteFolder(folder)
+                                }
+                            }
+                            selectedFolders = emptySet()
+                            showDeleteDialog = false
+                        }
+                    }
+                ) {
+                    Text(stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
+    // Move Dialog
+    if (showMoveDialog && selectedFolders.isNotEmpty()) {
+        BatchMoveDialog(
+            storages = storages,
+            onDismiss = { showMoveDialog = false },
+            onConfirm = { storageId ->
+                scope.launch {
+                    selectedFolders.forEach { folderId ->
+                        displayFolders.find { it.id == folderId }?.let { folder ->
+                            viewModel.moveFolder(folder, storageId)
+                        }
+                    }
+                    selectedFolders = emptySet()
+                    showMoveDialog = false
+                }
+            }
+        )
     }
 
     if (showAddFolderDialog) {
@@ -186,23 +277,7 @@ fun AddFolderDialog(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text(stringResource(R.string.folder_name)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text(stringResource(R.string.description)) },
-                    minLines = 5,
-                    maxLines = 5,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
+                // Storage selector FIRST (as requested)
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = { expanded = it }
@@ -233,6 +308,25 @@ fun AddFolderDialog(
                         }
                     }
                 }
+
+                // THEN folder name
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(stringResource(R.string.folder_name)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                // THEN description
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text(stringResource(R.string.description)) },
+                    minLines = 5,
+                    maxLines = 5,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         },
         confirmButton = {
