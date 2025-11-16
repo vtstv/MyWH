@@ -48,12 +48,12 @@ A specialized Android app for organizing and tracking folders and storage locati
 2. Debug APK: `./gradlew assembleDebug`
 3. Release APK: `./gradlew assembleRelease`
 4. Sign: Use `sign-apk.ps1` or apksigner (debug keystore for testing)
-5. Install: `adb install app/build/outputs/apk/release/app-release-signed.apk`
+5. Install: `adb install Release/MyWH-signed.apk`
 
 ## 📖 Usage
 
 ### APK Signing
-Script `sign-apk.ps1` creates keystore, signs, verifies, installs. 
+Script `sign-apk.ps1` Build, creates keystore, signs, verifies, installs. 
 
 ### Main Screens
 - Home: Recent folders, storages
@@ -80,7 +80,7 @@ Developed for specific needs, not for general distribution.
 
 **Author**: Murr (vtstv)  
 **GitHub**: [github.com/vtstv/MyWH](https://github.com/vtstv/MyWH)  
-**Version**: 1.0
+**Version**: 1.2
 
 ---
 
