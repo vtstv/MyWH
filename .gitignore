@@ -23,6 +23,6 @@ AppIcons.zip
 
 # Signed APKs
 *-signed.apk
-
+*.idsig
 build_output.txt
 example_database.json

@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.tooling.preview.Preview
+import com.murr.mywh.BuildConfig
 import com.murr.mywh.R
 
 @Composable
@@ -72,7 +73,7 @@ fun AboutDialog(
 
                 // Version
                 Text(
-                    text = "Version 1.2",
+                    text = "Version ${BuildConfig.VERSION_NAME}",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.murr.mywh.BuildConfig
 import com.murr.mywh.MainActivity
 import com.murr.mywh.R
 import com.murr.mywh.ui.navigation.Screen
@@ -188,7 +189,7 @@ fun AppDrawerPreviewContent(selectedRoute: String = "home") {
         NavigationDrawerItem(
             label = {
                 Text(
-                    text = "MyWH v1.2",
+                    text = "MyWH v${BuildConfig.VERSION_NAME}",
                     style = MaterialTheme.typography.titleLarge
                 )
             },

@@ -1,63 +1,136 @@
-# Sign MyWH Release APK
-# This script signs the release APK with a debug keystore
+# =====================================================================
+#  Android Build + Sign Script (MyWH)
+#  Smart keystore detection + release/debug support
+#  Author: https://github.com/vtstv
+# =====================================================================
+$ErrorActionPreference = "Stop"
 
-Write-Host "===================================" -ForegroundColor Cyan
-Write-Host "  MyWH APK Signing Script" -ForegroundColor Cyan
-Write-Host "===================================" -ForegroundColor Cyan
-Write-Host ""
+Write-Host "=== MyWH Build & Sign Script ===" -ForegroundColor Cyan
 
-# Paths
-$projectRoot = "D:\Dev\MyWH"
-$apkPath = "$projectRoot\app\build\outputs\apk\release\app-release-unsigned.apk"
-$signedApkPath = "$projectRoot\app\build\outputs\apk\release\MyWH-signed.apk"
-$keystorePath = "$projectRoot\debug.keystore"
+# ------------------------------------------------------------
+# PROJECT PATH (current script directory)
+# ------------------------------------------------------------
+$projectRoot = $PSScriptRoot
+Write-Host "[INFO] Project root: $projectRoot"
 
-# Check if unsigned APK exists
-if (-not (Test-Path $apkPath)) {
-    Write-Host "[ERROR] Unsigned APK not found at:" -ForegroundColor Red
-    Write-Host "  $apkPath" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "Please build the release APK first:" -ForegroundColor Yellow
-    Write-Host "  .\gradlew assembleRelease" -ForegroundColor White
+# ------------------------------------------------------------
+# APK PATHS
+# ------------------------------------------------------------
+$releaseDir  = Join-Path $projectRoot "Release"
+$unsignedApk = Join-Path $projectRoot "app\build\outputs\apk\release\app-release-unsigned.apk"
+$signedApk   = Join-Path $releaseDir "MyWH-signed.apk"
+
+# Create Release directory if it doesn't exist
+if (-not (Test-Path $releaseDir)) {
+    New-Item -ItemType Directory -Path $releaseDir -Force | Out-Null
+}
+
+if (Test-Path $signedApk) { Remove-Item $signedApk -Force }
+
+# ------------------------------------------------------------
+# KEYSTORE CONFIGURATION
+# ------------------------------------------------------------
+
+# Release keystore
+$releaseAlias = "mywhkey"
+$releaseKeystoreLocal = "$projectRoot\mywh.keystore"
+$releaseKeystoreHome  = "$env:USERPROFILE\.android\mywh.keystore"
+
+# Debug keystore
+$debugAlias = "androiddebugkey"
+$debugPassword = "android"
+$debugKeystoreLocal = "$projectRoot\debug.keystore"
+$debugKeystoreHome  = "$env:USERPROFILE\.android\debug.keystore"
+
+# Selected keystore info
+$useKeystorePath = $null
+$useAlias = $null
+$usePassword = $null
+
+Write-Host "`n=== Checking Keystore ===" -ForegroundColor Cyan
+
+# ------------------------------------------------------------
+# KEYSTORE SELECTION LOGIC
+# ------------------------------------------------------------
+
+if (Test-Path $releaseKeystoreLocal) {
+    Write-Host "[INFO] Using RELEASE keystore (local)" -ForegroundColor Green
+    $useKeystorePath = $releaseKeystoreLocal
+    $useAlias = $releaseAlias
+}
+elseif (Test-Path $releaseKeystoreHome) {
+    Write-Host "[INFO] Using RELEASE keystore (~/.android)" -ForegroundColor Green
+    $useKeystorePath = $releaseKeystoreHome
+    $useAlias = $releaseAlias
+}
+elseif (Test-Path $debugKeystoreLocal) {
+    Write-Host "[INFO] Using DEBUG keystore (local)" -ForegroundColor Yellow
+    $useKeystorePath = $debugKeystoreLocal
+    $useAlias = $debugAlias
+    $usePassword = $debugPassword
+}
+elseif (Test-Path $debugKeystoreHome) {
+    Write-Host "[INFO] Using DEBUG keystore (~/.android)" -ForegroundColor Yellow
+    $useKeystorePath = $debugKeystoreHome
+    $useAlias = $debugAlias
+    $usePassword = $debugPassword
+}
+else {
+    Write-Host "[WARN] No keystore found. Creating debug.keystore..." -ForegroundColor Yellow
+
+    keytool -genkey -v `
+        -keystore $debugKeystoreLocal `
+        -alias $debugAlias `
+        -keyalg RSA -keysize 2048 `
+        -validity 10000 `
+        -storepass android `
+        -keypass android `
+        -dname "CN=Android Debug,O=Android,C=US" | Out-Null
+
+    $useKeystorePath = $debugKeystoreLocal
+    $useAlias = $debugAlias
+    $usePassword = $debugPassword
+}
+
+# Ask for password if using release keystore
+if ($useAlias -eq $releaseAlias -and -not $usePassword) {
+    $usePassword = Read-Host "Enter release keystore password"
+}
+
+Write-Host "[INFO] Selected keystore: $useKeystorePath"
+Write-Host "[INFO] Alias: $useAlias"
+
+# ------------------------------------------------------------
+# BUILD PROJECT
+# ------------------------------------------------------------
+Write-Host "`n=== Building Project ===" -ForegroundColor Cyan
+
+$gradlew = Join-Path $projectRoot "gradlew.bat"
+
+if (-not (Test-Path $gradlew)) {
+    Write-Host "[ERROR] gradlew.bat not found!" -ForegroundColor Red
     exit 1
 }
 
-Write-Host "[1/4] Found unsigned APK" -ForegroundColor Green
-$apkSize = [math]::Round((Get-Item $apkPath).Length / 1MB, 2)
-Write-Host "  Size: $apkSize MB" -ForegroundColor Gray
+# Run Gradle assembleRelease
+cmd.exe /c "$gradlew assembleRelease"
 
-# Create debug keystore if it doesn't exist
-if (-not (Test-Path $keystorePath)) {
-    Write-Host ""
-    Write-Host "[2/4] Creating debug keystore..." -ForegroundColor Yellow
+# Gradle normally outputs to:
+$gradleUnsigned = $unsignedApk
 
-    $keytoolCmd = "keytool -genkey -v -keystore `"$keystorePath`" -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname `"CN=Android Debug,O=Android,C=US`""
-
-    try {
-        Invoke-Expression $keytoolCmd 2>&1 | Out-Null
-        Write-Host "  Keystore created successfully" -ForegroundColor Green
-    } catch {
-        Write-Host "[ERROR] Failed to create keystore" -ForegroundColor Red
-        Write-Host $_.Exception.Message -ForegroundColor Red
-        exit 1
-    }
-} else {
-    Write-Host ""
-    Write-Host "[2/4] Using existing debug keystore" -ForegroundColor Green
+if (-not (Test-Path $gradleUnsigned)) {
+    Write-Host "[ERROR] Unsigned APK not found." -ForegroundColor Red
+    exit 1
 }
 
-# Remove old signed APK if exists
-if (Test-Path $signedApkPath) {
-    Remove-Item $signedApkPath -Force
-    Write-Host "  Removed old signed APK" -ForegroundColor Gray
-}
+Write-Host "[INFO] Unsigned APK ready at: $unsignedApk"
 
-# Sign APK using apksigner (from Android SDK build-tools)
-Write-Host ""
-Write-Host "[3/4] Signing APK..." -ForegroundColor Yellow
+# ------------------------------------------------------------
+# SIGN APK — smart search for apksigner
+# ------------------------------------------------------------
+Write-Host "`n=== Signing APK ===" -ForegroundColor Cyan
 
-# Try to find apksigner in Android SDK
-$possiblePaths = @(
+$possibleApksigner = @(
     "$env:ANDROID_HOME\build-tools\35.0.0\apksigner.bat",
     "$env:ANDROID_HOME\build-tools\34.0.0\apksigner.bat",
     "$env:ANDROID_HOME\build-tools\33.0.2\apksigner.bat",
@@ -67,90 +140,40 @@ $possiblePaths = @(
 )
 
 $apksigner = $null
-foreach ($path in $possiblePaths) {
-    if (Test-Path $path) {
-        $apksigner = $path
+foreach ($p in $possibleApksigner) {
+    if (Test-Path $p) {
+        $apksigner = $p
         break
     }
 }
 
 if (-not $apksigner) {
     Write-Host "[ERROR] apksigner not found!" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "Please install Android SDK Build Tools or set ANDROID_HOME environment variable" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "Alternative: Use jarsigner (legacy method)" -ForegroundColor Cyan
-    Write-Host "  jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android app-release-unsigned.apk androiddebugkey" -ForegroundColor White
+    Write-Host "Install Android SDK Build Tools or set ANDROID_HOME." -ForegroundColor Yellow
     exit 1
 }
 
-Write-Host "  Using apksigner: $(Split-Path $apksigner -Leaf)" -ForegroundColor Gray
 
-try {
-    & $apksigner sign --ks $keystorePath --ks-pass pass:android --key-pass pass:android --out $signedApkPath $apkPath 2>&1 | Out-Null
+Write-Host "[INFO] Using apksigner: $apksigner"
 
-    if (Test-Path $signedApkPath) {
-        Write-Host "  APK signed successfully!" -ForegroundColor Green
-    } else {
-        throw "Signed APK was not created"
-    }
-} catch {
-    Write-Host "[ERROR] Failed to sign APK" -ForegroundColor Red
-    Write-Host $_.Exception.Message -ForegroundColor Red
-    exit 1
-}
+# Perform signing
+& $apksigner sign `
+    --ks "$useKeystorePath" `
+    --ks-pass pass:"$usePassword" `
+    --key-pass pass:"$usePassword" `
+    --out "$signedApk" `
+    "$unsignedApk"
+
+Write-Host "[INFO] APK signed successfully!" -ForegroundColor Green
 
 # Verify signature
-Write-Host ""
-Write-Host "[4/4] Verifying signature..." -ForegroundColor Yellow
+Write-Host "`n=== Verifying signature ===" -ForegroundColor Cyan
+& $apksigner verify "$signedApk"
 
-try {
-    & $apksigner verify $signedApkPath 2>&1 | Out-Null
-    Write-Host "  Signature verified successfully!" -ForegroundColor Green
-} catch {
-    Write-Host "[WARNING] Could not verify signature, but APK should still work" -ForegroundColor Yellow
-}
-
-# Final info
-Write-Host ""
-Write-Host "===================================" -ForegroundColor Cyan
-Write-Host "  SUCCESS!" -ForegroundColor Green
-Write-Host "===================================" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "Signed APK location:" -ForegroundColor White
-Write-Host "  $signedApkPath" -ForegroundColor Cyan
-Write-Host ""
-$signedSize = [math]::Round((Get-Item $signedApkPath).Length / 1MB, 2)
-Write-Host "Size: $signedSize MB" -ForegroundColor White
-Write-Host ""
-Write-Host "Install command:" -ForegroundColor White
-Write-Host "  adb install `"$signedApkPath`"" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "Or install now? (Y/N)" -ForegroundColor Yellow
-$response = Read-Host
-
-if ($response -eq "Y" -or $response -eq "y") {
-    Write-Host ""
-    Write-Host "Installing APK..." -ForegroundColor Yellow
-
-    try {
-        adb install -r $signedApkPath
-        Write-Host ""
-        Write-Host "Installation completed!" -ForegroundColor Green
-    } catch {
-        Write-Host ""
-        Write-Host "[ERROR] Installation failed" -ForegroundColor Red
-        Write-Host $_.Exception.Message -ForegroundColor Red
-        Write-Host ""
-        Write-Host "Make sure:" -ForegroundColor Yellow
-        Write-Host "  1. USB debugging is enabled on your device" -ForegroundColor White
-        Write-Host "  2. Device is connected via USB" -ForegroundColor White
-        Write-Host "  3. You've authorized the computer on your device" -ForegroundColor White
-    }
-} else {
-    Write-Host ""
-    Write-Host "APK is ready to install manually!" -ForegroundColor Green
-}
-
-Write-Host ""
-
+# ------------------------------------------------------------
+# DONE
+# ------------------------------------------------------------
+Write-Host "`n====================================================="
+Write-Host "BUILD COMPLETE!"
+Write-Host "Signed APK: $signedApk" -ForegroundColor Green
+Write-Host "====================================================="
